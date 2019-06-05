@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "lib": ["dom", "es5", "es2015.proxy", "es2015.core", "es2015.promise", "es2015.iterable"],
+      "moduleResolution": "node",
+      "module": "commonjs",
+      "declaration": false,
+      "noLib": false,
+      "sourceMap": true,
+      "jsx": "react",
+      "noImplicitAny": true,
+      "noImplicitThis": true,
+      "noEmitOnError": true,
+      "removeComments": false,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "experimentalDecorators": true,
+      "outDir": "build/",
+      "skipLibCheck": true,
+      "importHelpers": true,
+      "allowJs": true,
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "./node_modules/",
+      "paths": {
+        "pages/*": ["../src/PAGES/*"],
+        "specs/*": ["../src/TESTS/*"]
+      }
+    },
+    "include": [
+      "./src/**/*"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+  }
+  
