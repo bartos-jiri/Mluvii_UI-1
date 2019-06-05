@@ -1,3 +1,5 @@
+const baseUrl = 'https://apptest.mluvii.com';
+
 exports.config = {
     //
     // ====================
@@ -8,6 +10,21 @@ exports.config = {
     // on a remote machine).
     runner: 'local',
     //
+    // =====================
+    // Server Configurations
+    // =====================
+    // Host address of the running Selenium server. This information is usually obsolete as
+    // WebdriverIO automatically connects to localhost. Also, if you are using one of the
+    // supported cloud services like Sauce Labs, Browserstack, or Testing Bot you don't
+    // need to define host and port information because WebdriverIO can figure that out
+    // according to your user and key information. However, if you are using a private Selenium
+    // backend you should define the host address, port, and path here.
+    //
+    // hostname: '172.18.5.185',
+    // port: 4444,
+    // path: '/wd/hub',
+    
+    //
     // ==================
     // Specify Test Files
     // ==================
@@ -17,7 +34,7 @@ exports.config = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
-        './TESTS/**/*.ts'
+        './test/**/*.ts'
     ],
     // Patterns to exclude.
     exclude: [
@@ -45,40 +62,49 @@ exports.config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://docs.saucelabs.com/reference/platforms-configurator
     //
-    capabilities: [{
-        // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-        // grid with only 5 firefox instances available you can make sure that not more than
-        // 5 instances get started at a time.
-        maxInstances: 5,
-        //
-        browserName: 'chrome',
-        // If outputDir is provided WebdriverIO can capture driver session logs
-        // it is possible to configure which logTypes to include/exclude.
-        // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
-        // excludeDriverLogs: ['bugreport', 'server'],
-    }],
+    capabilities: [
+        {
+            // maxInstances can get overwritten per capability. So if you have an in-house Selenium
+            // grid with only 5 firefox instances available you can make sure that not more than
+            // 5 instances get started at a time.
+            maxInstances: 5,
+            //
+            browserName: 'chrome',            
+            'goog:chromeOptions': {
+                // to run chrome headless the following flags are required
+                // (see https://developers.google.com/web/updates/2017/04/headless-chrome)
+                args: [
+                    '--headless', 
+                    '--disable-gpu'
+                ]                
+            }
+        },
+        // {
+        //     // maxInstances can get overwritten per capability. So if you have an in house Selenium
+        //     // grid with only 5 firefox instance available you can make sure that not more than
+        //     // 5 instance gets started at a time.
+        //     maxInstances: 5,
+        //     browserName: 'firefox',
+        //     // specs: [
+        //     //     'test/ffOnly/*'
+        //     // ],
+        //     "moz:firefoxOptions": {
+        //     // flag to activate Firefox headless mode (see https://github.com/mozilla/geckodriver/blob/master/README.md#firefox-capabilities for more details about moz:firefoxOptions)
+        //     // args: ['-headless']
+        //     }
+        // }
+    ],
     //
     // ===================
     // Test Configurations
     // ===================
     // Define all options that are relevant for the WebdriverIO instance here
     //
-    // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'trace',
+    // Level of logging verbosity: trace | debug | info | warn | error
+    logLevel: 'error',
     //
-    // Set specific log levels per logger
-    // loggers:
-    // - webdriver, webdriverio
-    // - @wdio/applitools-service, @wdio/browserstack-service, @wdio/devtools-service, @wdio/sauce-service
-    // - @wdio/mocha-framework, @wdio/jasmine-framework
-    // - @wdio/local-runner, @wdio/lambda-runner
-    // - @wdio/sumologic-reporter
-    // - @wdio/cli, @wdio/config, @wdio/sync, @wdio/utils
-    // Level of logging verbosity: trace | debug | info | warn | error | silent
-    // logLevels: {
-        // webdriver: 'info',
-        // '@wdio/applitools-service': 'info'
-    // },
+    // Warns when a deprecated command is used
+    deprecationWarnings: true,
     //
     // If you only want to run your tests until a specific amount of tests have failed use
     // bail (default is 0 - don't bail, run all tests).
@@ -88,7 +114,7 @@ exports.config = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: 'https://apptest.mluvii.com',
+    baseUrl: baseUrl,
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
@@ -104,7 +130,8 @@ exports.config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    // services: [],//
+    services: ['selenium-standalone'],
+    //
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
     // see also: https://webdriver.io/docs/frameworks.html
@@ -113,24 +140,21 @@ exports.config = {
     // before running any tests.
     framework: 'mocha',
     //
-    // The number of times to retry the entire specfile when it fails as a whole
-    // specFileRetries: 1,
-    //
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter.html
-    // reporters: ['dot'],
+    reporters: ['spec','allure'],
+    
     //
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
         timeout: 60000,
-        compilers: ['ts:ts-node/register', 'tsconfig-paths/register']
-    },
-
-    before: function (capabilities, specs) {
-        require('ts-node/register');
+        compilers: [
+            // 'ts-node/register',
+            'tsconfig-paths/register'
+        ]
     },
     //
     // =====
@@ -162,8 +186,10 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {Array.<String>} specs List of spec file paths that are to be run
      */
-    // before: function (capabilities, specs) {
-    // },
+    before: function (capabilities, specs) {
+        // require('ts-node/register');        
+        require('ts-node').register({ files: true });
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {String} commandName hook command name
@@ -200,8 +226,12 @@ exports.config = {
      * Function to be executed after a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
      * @param {Object} test test details
      */
-    // afterTest: function (test) {
-    // },
+    afterTest: function (test) {        
+        if (test.error !== undefined) {
+            let name = 'ERROR-' + Date.now();
+            browser.saveScreenshot('./errorShots/' + name + '.png');
+        }        
+    },
     /**
      * Hook that gets executed after the suite has ended
      * @param {Object} suite suite details
@@ -243,12 +273,5 @@ exports.config = {
      * @param {<Object>} results object containing test results
      */
     // onComplete: function(exitCode, config, capabilities, results) {
-    // },
-    /**
-    * Gets executed when a refresh happens.
-    * @param {String} oldSessionId session ID of the old session
-    * @param {String} newSessionId session ID of the new session
-    */
-    //onReload: function(oldSessionId, newSessionId) {
-    //}
+    // }
 }

@@ -1,36 +1,29 @@
 {
     "compilerOptions": {
-      "target": "es5",
-      "lib": ["dom", "es5", "es2015.proxy", "es2015.core", "es2015.promise", "es2015.iterable"],
-      "moduleResolution": "node",
-      "module": "commonjs",
-      "declaration": false,
-      "noLib": false,
-      "sourceMap": true,
-      "jsx": "react",
-      "noImplicitAny": true,
-      "noImplicitThis": true,
-      "noEmitOnError": true,
-      "removeComments": false,
-      "noImplicitReturns": true,
-      "noFallthroughCasesInSwitch": true,
-      "experimentalDecorators": true,
-      "outDir": "build/",
-      "skipLibCheck": true,
-      "importHelpers": true,
-      "allowJs": true,
-      "allowSyntheticDefaultImports": true,
-      "baseUrl": "./node_modules/",
-      "paths": {
-        "pages/*": ["../src/PAGES/*"],
-        "specs/*": ["../src/TESTS/*"]
-      }
-    },
+        "lib": [
+            "dom",
+            "es7"
+        ],
+        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,              
+        "baseUrl": ".",
+        "paths": {
+                "*": [ "./*" ],
+                "pages/*": ["./pages/*"],
+                "models/*": ["./models/*"],
+                "test/*": ["./test/*"],
+        },
+        "types": ["@wdio/mocha-framework", "node", "chai", "@wdio/sync"]
+    },    
     "include": [
-      "./src/**/*"
+        "./test/**/*.ts"
     ],
     "exclude": [
-      "node_modules"
+      "./node_modules"
     ],
-  }
-  
+    "compileOnSave": false
+}
